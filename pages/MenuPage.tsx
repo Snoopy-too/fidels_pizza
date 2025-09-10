@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { MenuItem } from '../types';
 import Modal from '../components/Modal';
+import { useLocale } from '../context/LocaleContext';
 
 const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void }> = ({ item, onAddToCart }) => {
+    const { t, locale } = useLocale();
     return (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
             <img src={item.imageUrl} alt={item.name} className="w-full h-48 object-cover" />
@@ -12,13 +13,13 @@ const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void
                 <h3 className="text-2xl font-bold text-stone-800">{item.name}</h3>
                 <p className="text-stone-600 mt-2 flex-grow">{item.description}</p>
                 <div className="mt-4 flex justify-between items-center">
-                    <p className="text-xl font-semibold">{item.price.toLocaleString()} JPY</p>
+                    <p className="text-xl font-semibold">{item.price.toLocaleString(locale)} {t('currency')}</p>
                     <button
                         onClick={() => onAddToCart(item)}
                         className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors disabled:bg-stone-400"
                         disabled={!item.available}
                     >
-                        {item.available ? 'Add to Order' : 'Unavailable'}
+                        {item.available ? t('menuPage.addToOrderBtn') : t('menuPage.unavailableBtn')}
                     </button>
                 </div>
             </div>
@@ -28,6 +29,7 @@ const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void
 
 const MenuPage: React.FC = () => {
     const { menuItems, addToCart, cart, removeFromCart, updateCartItemQuantity, getCartTotal, addOrder, updateOrder, auth, clearCart, orderBeingUpdated, showAlert } = useApp();
+    const { t, locale } = useLocale();
     const [isCartOpen, setIsCartOpen] = useState(false);
 
     const handleAddToCart = (item: MenuItem) => {
@@ -36,12 +38,12 @@ const MenuPage: React.FC = () => {
     
     const handleSubmitOrder = () => {
         if (!auth.user) {
-            showAlert("Login Required", "You must be logged in to place an order.");
+            showAlert(t('menuPage.loginRequiredTitle'), t('menuPage.loginRequiredMessage'));
             return;
         }
 
         if (cart.length === 0) {
-            showAlert("Empty Cart", "Your cart is empty.");
+            showAlert(t('menuPage.emptyCartTitle'), t('menuPage.emptyCartMessage'));
             return;
         }
 
@@ -57,12 +59,12 @@ const MenuPage: React.FC = () => {
     return (
         <div>
             <div className="flex justify-between items-center mb-10 flex-wrap gap-4">
-                <h1 className="text-3xl md:text-4xl font-bold">Fidel's Pizza Menu</h1>
+                <h1 className="text-3xl md:text-4xl font-bold">{t('menuPage.title')}</h1>
                 <button onClick={() => setIsCartOpen(true)} className="relative bg-green-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-700 transition-transform hover:scale-105 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    View Cart
+                    {t('menuPage.viewCartBtn')}
                     {cart.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
                             {cart.reduce((total, item) => total + item.quantity, 0)}
@@ -77,16 +79,16 @@ const MenuPage: React.FC = () => {
                 ))}
             </div>
 
-            <Modal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} title="My Cart">
+            <Modal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} title={t('menuPage.cart.title')}>
                 {cart.length === 0 ? (
-                    <p>Your cart is empty. Add some pizza from the menu!</p>
+                    <p>{t('menuPage.cart.empty')}</p>
                 ) : (
                     <div className="space-y-4">
                         {cart.map(cartItem => (
                             <div key={cartItem.menuItem.id} className="flex justify-between items-center border-b pb-2">
                                 <div>
                                     <p className="font-bold">{cartItem.menuItem.name}</p>
-                                    <p className="text-sm text-stone-600">{cartItem.menuItem.price.toLocaleString()} JPY</p>
+                                    <p className="text-sm text-stone-600">{cartItem.menuItem.price.toLocaleString(locale)} {t('currency')}</p>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                    <div className="flex items-center space-x-2">
@@ -94,20 +96,20 @@ const MenuPage: React.FC = () => {
                                        <span className="w-6 text-center">{cartItem.quantity}</span>
                                        <button onClick={() => updateCartItemQuantity(cartItem.menuItem.id, cartItem.quantity + 1)} disabled={cartItem.quantity >= 15} className="bg-stone-200 hover:bg-stone-300 w-7 h-7 rounded-full font-bold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">+</button>
                                    </div>
-                                   <p className="font-semibold w-24 text-right">{(cartItem.menuItem.price * cartItem.quantity).toLocaleString()} JPY</p>
+                                   <p className="font-semibold w-24 text-right">{(cartItem.menuItem.price * cartItem.quantity).toLocaleString(locale)} {t('currency')}</p>
                                    <button onClick={() => removeFromCart(cartItem.menuItem.id)} className="text-red-500 hover:text-red-700 font-bold text-xl">&times;</button>
                                 </div>
                             </div>
                         ))}
                         <div className="text-right font-bold text-xl mt-4 pt-4 border-t">
-                            Total: {getCartTotal().toLocaleString()} JPY
+                            {t('menuPage.cart.total')} {getCartTotal().toLocaleString(locale)} {t('currency')}
                         </div>
                          <div className="flex justify-between mt-6">
                              <button onClick={() => clearCart()} className="bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600">
-                                 Clear Cart
+                                 {t('menuPage.cart.clearBtn')}
                              </button>
                              <button onClick={handleSubmitOrder} className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">
-                                 {orderBeingUpdated ? 'Update Order' : 'Place Order'}
+                                 {orderBeingUpdated ? t('menuPage.cart.updateOrderBtn') : t('menuPage.cart.placeOrderBtn')}
                              </button>
                          </div>
                     </div>

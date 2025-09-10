@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useLocale } from '../context/LocaleContext';
 
 const LoginPage: React.FC = () => {
     const { login } = useApp();
+    const { t } = useLocale();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,16 +21,16 @@ const LoginPage: React.FC = () => {
               navigate('/menu');
             }
         } else {
-            setError('Invalid email or password.');
+            setError(t('loginPage.invalidCredentialsError'));
         }
     };
 
     return (
         <div className="max-w-sm mx-auto bg-white p-8 rounded-xl shadow-lg">
-            <h2 className="text-3xl font-bold text-center text-stone-800 mb-6">Login</h2>
+            <h2 className="text-3xl font-bold text-center text-stone-800 mb-6">{t('loginPage.title')}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-stone-700">Email</label>
+                    <label htmlFor="email" className="block text-sm font-medium text-stone-700">{t('loginPage.emailLabel')}</label>
                     <input
                         type="email"
                         id="email"
@@ -40,7 +41,7 @@ const LoginPage: React.FC = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-stone-700">Password</label>
+                    <label htmlFor="password" className="block text-sm font-medium text-stone-700">{t('loginPage.passwordLabel')}</label>
                     <input
                         type="password"
                         id="password"
@@ -49,15 +50,15 @@ const LoginPage: React.FC = () => {
                         className="mt-1 block w-full px-3 py-2 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                         required
                     />
-                     <p className="text-xs text-stone-500 mt-1">Hint: Use 'password' for any user.</p>
+                     <p className="text-xs text-stone-500 mt-1">{t('loginPage.passwordHint')}</p>
                 </div>
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 <button type="submit" className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
-                    Sign In
+                    {t('loginPage.signInBtn')}
                 </button>
                 <div className="text-center">
                     <Link to="/forgot-password" className="text-sm text-red-600 hover:underline">
-                        Forgot Password?
+                        {t('loginPage.forgotPasswordLink')}
                     </Link>
                 </div>
             </form>

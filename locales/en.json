@@ -1,0 +1,270 @@
+{
+    "header": {
+        "title": "Fidel's Pizza",
+        "home": "Home",
+        "menu": "Menu",
+        "myOrders": "My Orders",
+        "admin": "Admin",
+        "welcome": "Welcome, {{name}}",
+        "logout": "Logout",
+        "login": "Login",
+        "register": "Register"
+    },
+    "footer": {
+        "copy": "© {{year}} Fidel's Pizza Event. All Rights Reserved.",
+        "crafted": "Crafted with passion in Ako by Fidel."
+    },
+    "landingPage": {
+        "eventInfo": {
+            "date": "Date:",
+            "location": "Location:"
+        },
+        "registerNow": "Register Now",
+        "preOrder": "Pre-Order Pizza",
+        "pastEventsTitle": "A Taste of Our Past Events"
+    },
+    "registerPage": {
+        "title": "Register for the Event",
+        "accessCodePrompt": "Please enter the 4-digit access code to proceed.",
+        "accessCodeLabel": "Access Code",
+        "verifyCodeBtn": "Verify Code",
+        "invalidCodeError": "Invalid access code.",
+        "codeVerifiedSuccess": "Code Verified! Please fill out your details.",
+        "fullNameLabel": "Full Name",
+        "emailLabel": "Email Address",
+        "passwordLabel": "Password",
+        "emailExistsError": "An account with this email already exists.",
+        "simulationNotice": "A confirmation link will be sent to your email (simulation). Your account will be active immediately for this demo.",
+        "createAccountBtn": "Create Account",
+        "successTitle": "Registration Successful!",
+        "successMessage": "You will be redirected to the menu."
+    },
+    "loginPage": {
+        "title": "Login",
+        "emailLabel": "Email",
+        "passwordLabel": "Password",
+        "passwordHint": "Hint: Use 'password' for any user.",
+        "invalidCredentialsError": "Invalid email or password.",
+        "signInBtn": "Sign In",
+        "forgotPasswordLink": "Forgot Password?"
+    },
+    "menuPage": {
+        "title": "Fidel's Pizza Menu",
+        "viewCartBtn": "View Cart",
+        "addToOrderBtn": "Add to Order",
+        "unavailableBtn": "Unavailable",
+        "loginRequiredTitle": "Login Required",
+        "loginRequiredMessage": "You must be logged in to place an order.",
+        "emptyCartTitle": "Empty Cart",
+        "emptyCartMessage": "Your cart is empty.",
+        "cart": {
+            "title": "My Cart",
+            "empty": "Your cart is empty. Add some pizza from the menu!",
+            "total": "Total:",
+            "clearBtn": "Clear Cart",
+            "placeOrderBtn": "Place Order",
+            "updateOrderBtn": "Update Order"
+        }
+    },
+    "myOrders": {
+        "title": "My Pizza Orders",
+        "noOrders": "You haven't placed any orders yet. Visit the menu to order some delicious pizza!",
+        "order": "Order",
+        "placedOn": "Placed on:",
+        "pickupTime": "Pick-up Time:",
+        "unassigned": "Unassigned",
+        "editOrderTitle": "Edit Your Order:",
+        "emptyOrder": "Your order is empty.",
+        "summaryTitle": "Order Summary:",
+        "total": "Total:",
+        "saveChangesBtn": "Save Changes",
+        "discardChangesBtn": "Discard Changes",
+        "updateOrderBtn": "Update Order",
+        "cancelOrderBtn": "Cancel Order",
+        "confirmCancelTitle": "Confirm Cancellation",
+        "confirmCancelMessage": "Are you sure you want to cancel this order? This action cannot be undone.",
+        "confirmEmptyTitle": "Empty Order",
+        "confirmEmptyMessage": "Your order is now empty. Would you like to cancel the entire order?",
+        "confirmEmptyBtn": "Yes, Cancel Order"
+    },
+    "admin": {
+        "dashboard": {
+            "title": "Administrator Control Panel",
+            "tabs": {
+                "orders": "Orders Management",
+                "menu": "Menu Management",
+                "settings": "Event & Site Management",
+                "profile": "My Profile"
+            }
+        },
+        "orders": {
+            "title": "Manage Orders",
+            "filterPlaceholder": "Filter by customer, item, or order #",
+            "selectedCount": "{{count}} order(s) selected.",
+            "setPickupTime": "Set Pick-up Time...",
+            "applyBtn": "Apply",
+            "headers": {
+                "id": "Order ID",
+                "customer": "Customer",
+                "items": "Items",
+                "total": "Total",
+                "pickupTime": "Pick-up Time",
+                "date": "Date",
+                "status": "Status",
+                "actions": "Actions"
+            },
+            "viewAction": "View",
+            "notAvailable": "N/A",
+            "modalTitle": "Order #{{orderId}}",
+            "customerLabel": "Customer:",
+            "itemsLabel": "Items:",
+            "totalLabel": "Total:",
+            "statusLabel": "Status:",
+            "pickupTimeLabel": "Pick-up Time:",
+            "productionSummary": {
+                "title": "Production Summary",
+                "totalPizza": "Total Pizza Production",
+                "pizzaType": "Pizza Type",
+                "total": "Total",
+                "byTime": "Production by Pick-up Time",
+                "time": "Time"
+            },
+            "bulkUpdateConfirmTitle": "Confirm Bulk Update",
+            "bulkUpdateConfirmMessage": "Are you sure you want to set the pick-up time to {{pickupTime}} for {{count}} selected orders?",
+            "bulkUpdateSuccessTitle": "Update Successful",
+            "bulkUpdateSuccessMessage": "(Simulation) {{count}} orders have been updated. Notifications sent to customers.",
+            "missingInfoTitle": "Missing Information",
+            "missingInfoMessage": "Please select a pick-up time."
+        },
+        "menu": {
+            "title": "Manage Menu",
+            "addNewBtn": "Add New Item",
+            "statusLabel": "Status:",
+            "available": "Available",
+            "unavailable": "Unavailable",
+            "editBtn": "Edit",
+            "deleteBtn": "Delete",
+            "modal": {
+                "editTitle": "Edit Menu Item",
+                "addTitle": "Add New Menu Item",
+                "namePlaceholder": "Name",
+                "descriptionPlaceholder": "Description",
+                "pricePlaceholder": "Price",
+                "imageUrlPlaceholder": "Image URL",
+                "availableLabel": "Available",
+                "saveBtn": "Save Changes",
+                "addBtn": "Add Item"
+            },
+            "confirmDeleteTitle": "Confirm Deletion",
+            "confirmDeleteMessage": "Are you sure you want to delete this item?"
+        },
+        "settings": {
+            "title": "Event & Site Management",
+            "eventDetails": {
+                "title": "Event Details",
+                "date": "Event Date",
+                "address": "Event Address",
+                "saveBtn": "Save Event Details"
+            },
+            "landingContent": {
+                "title": "Landing Page Content",
+                "pageTitle": "Title",
+                "description": "Description",
+                "imageUrls": "Image URLs (comma-separated)",
+                "saveBtn": "Save Landing Page"
+            },
+            "accessCode": {
+                "title": "Registration Access Code",
+                "code": "4-Digit Code",
+                "saveBtn": "Save Access Code"
+            },
+            "dangerZone": {
+                "title": "Danger Zone",
+                "description": "This action will permanently delete all orders from the system. This is useful for clearing out old data before a new event. This action cannot be undone.",
+                "clearOrdersBtn": "Clear All Orders"
+            },
+            "updateSuccessTitle": "Success",
+            "eventUpdateSuccess": "Event information updated!",
+            "landingUpdateSuccess": "Landing page content updated!",
+            "codeUpdateSuccess": "Access code updated!",
+            "clearOrdersConfirmTitle": "Confirm Deletion",
+            "clearOrdersConfirmMessage": "ARE YOU SURE? This will permanently delete all orders. This cannot be undone.",
+            "clearOrdersSuccessTitle": "Success",
+            "clearOrdersSuccessMessage": "All orders have been cleared."
+        }
+    },
+    "profile": {
+        "title": "My Profile",
+        "noChanges": "No changes to save.",
+        "notAuthenticated": "Not authenticated.",
+        "incorrectPassword": "Incorrect current password.",
+        "updateSuccess": "Profile updated successfully.",
+        "passwordMismatch": "New passwords do not match.",
+        "accountDetails": {
+            "title": "Account Details",
+            "name": "Name",
+            "email": "Email"
+        },
+        "changePassword": {
+            "title": "Change Password",
+            "current": "Current Password",
+            "currentPlaceholder": "Required to change password",
+            "new": "New Password",
+            "newPlaceholder": "Leave blank to keep current",
+            "confirm": "Confirm New Password"
+        },
+        "saveBtn": "Save Changes"
+    },
+    "forgotPassword": {
+        "title": "Forgot Password",
+        "prompt": "Enter your email address and we'll send you a link to reset your password.",
+        "emailLabel": "Email",
+        "sendBtn": "Send Reset Link",
+        "sendingBtn": "Sending...",
+        "backToLogin": "Back to Login",
+        "noAccount": "No account found with that email address.",
+        "resetLinkSentTitle": "Reset Link Sent (Simulation)",
+        "resetLinkSentMessage": "A password reset link has been sent to {{email}}.\n\nFor this demo, the link is:\n{{resetUrl}}",
+        "resetLinkSentSuccess": "If an account exists for {{email}}, a reset link has been sent."
+    },
+    "resetPassword": {
+        "title": "Reset Password",
+        "noToken": "No reset token provided. Please request a new reset link.",
+        "requestNewLink": "Request a new link",
+        "prompt": "Please enter your new password.",
+        "success": "Password has been reset successfully.",
+        "redirecting": " Redirecting to login...",
+        "invalidToken": "Invalid or expired password reset token.",
+        "passwordMismatch": "Passwords do not match.",
+        "passwordLengthError": "Password must be at least 6 characters long.",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "resetBtn": "Reset Password",
+        "resettingBtn": "Resetting..."
+    },
+    "order": {
+        "status": {
+            "pending": "Pending",
+            "completed": "Completed",
+            "cancelled": "Cancelled"
+        },
+        "placed": {
+            "title": "Order Placed!",
+            "message": "(Simulation) Order #{{orderId}} placed!\n- An admin will assign a pickup time shortly.\n- Confirmation email sent to {{email}}.\n- Notification sent to admins."
+        },
+        "updated": {
+            "title": "Order Updated",
+            "message": "(Simulation) Order #{{orderId}} has been updated!\n- Confirmation email sent to {{email}}.\n- Notification sent to admins."
+        },
+        "cancelled": {
+            "title": "Order Cancelled",
+            "message": "(Simulation) Order #{{orderId}} has been cancelled.\n- Confirmation email sent to {{email}}.\n- Notification sent to admins."
+        }
+    },
+    "modal": {
+        "ok": "OK",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+    },
+    "currency": "JPY"
+}

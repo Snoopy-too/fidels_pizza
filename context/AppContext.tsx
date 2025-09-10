@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import type { User, MenuItem, Order, CartItem, EventInfo, LandingPageContent, OrderItem, ModalOptions } from '../types';
 import { MOCK_USERS, MOCK_MENU_ITEMS, MOCK_ORDERS, MOCK_EVENT_INFO, MOCK_LANDING_CONTENT, MOCK_ACCESS_CODE } from '../services/mockData';
+import { useLocale } from './LocaleContext';
 
 // Define the shape of the context state
 interface AppContextType {
@@ -52,7 +52,7 @@ interface AppContextType {
     // Modal context
     showModal: (options: Omit<ModalOptions, 'type'> & { onConfirm?: () => void }) => void;
     showAlert: (title: string, message: string, onOk?: () => void) => void;
-    showConfirm: (title: string, message: string, onConfirm: () => void, confirmText?: string) => void;
+    showConfirm: (title: string, message: string, onConfirm: () => void, confirmText?: string, cancelText?: string) => void;
     hideModal: () => void;
     modalState: ModalOptions | null;
 }
@@ -77,6 +77,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [orderBeingUpdated, setOrderBeingUpdated] = useState<number | null>(null);
     const [passwordResetTokens, setPasswordResetTokens] = useState<Map<string, { email: string; expires: number }>>(new Map());
     const [modalState, setModalState] = useState<ModalOptions | null>(null);
+    const { t } = useLocale();
 
     // --- Modal Functions ---
     const showModal = useCallback((options: Omit<ModalOptions, 'type'> & { onConfirm?: () => void }) => {
@@ -87,12 +88,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, []);
     
     const showAlert = useCallback((title: string, message: string, onOk?: () => void) => {
-        showModal({ title, message, onConfirm: onOk });
-    }, [showModal]);
+        showModal({ title, message, onConfirm: onOk, confirmText: t('modal.ok') });
+    }, [showModal, t]);
 
-    const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, confirmText: string = 'Confirm') => {
-        showModal({ title, message, onConfirm, confirmText });
-    }, [showModal]);
+    const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, confirmText: string = t('modal.confirm'), cancelText: string = t('modal.cancel')) => {
+        showModal({ title, message, onConfirm, confirmText, cancelText });
+    }, [showModal, t]);
 
     const hideModal = useCallback(() => {
         setModalState(null);
@@ -132,10 +133,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
     
     const updateUserProfile = (updates: { name?: string; email?: string; currentPassword?: string; newPassword?: string; }) => {
-        if (!auth.user) return { success: false, message: "Not authenticated." };
+        if (!auth.user) return { success: false, message: t('profile.notAuthenticated') };
 
         if (updates.newPassword && updates.currentPassword !== auth.user.password) {
-            return { success: false, message: "Incorrect current password." };
+            return { success: false, message: t('profile.incorrectPassword') };
         }
         
         const updatedUsers = users.map(u => {
@@ -155,13 +156,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             setAuth({ isAuthenticated: true, user: updatedUser });
         }
         
-        return { success: true, message: "Profile updated successfully." };
+        return { success: true, message: t('profile.updateSuccess') };
     };
 
     const requestPasswordReset = (email: string) => {
         const userExists = users.some(u => u.email === email);
         if (!userExists) {
-            return { success: false, message: "No account found with that email address." };
+            return { success: false, message: t('forgotPassword.noAccount') };
         }
 
         const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -171,9 +172,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         // Simulate sending email
         const resetUrl = `${window.location.origin}${window.location.pathname}#/reset-password?token=${token}`;
-        showAlert("Reset Link Sent (Simulation)", `A password reset link has been sent to ${email}.\n\nFor this demo, the link is:\n${resetUrl}`);
+        showAlert(t('forgotPassword.resetLinkSentTitle'), t('forgotPassword.resetLinkSentMessage', { email, resetUrl }));
 
-        return { success: true, message: `If an account exists for ${email}, a reset link has been sent.` };
+        return { success: true, message: t('forgotPassword.resetLinkSentSuccess', { email }) };
     };
 
     const resetPassword = (token: string, newPassword: string) => {
@@ -188,7 +189,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                     return newMap;
                 });
             }
-            return { success: false, message: "Invalid or expired password reset token." };
+            return { success: false, message: t('resetPassword.invalidToken') };
         }
 
         setUsers(prevUsers => prevUsers.map(user => {
@@ -205,7 +206,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             return newMap;
         });
         
-        return { success: true, message: "Password has been reset successfully." };
+        return { success: true, message: t('resetPassword.success') };
     };
 
 
@@ -270,6 +271,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (cartItems.length === 0) return null;
 
         const newOrderId = orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1;
+        const orderIdStr = String(newOrderId).padStart(4, '0');
 
         const newOrder: Order = {
             id: newOrderId,
@@ -286,7 +288,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
         setOrders(prev => [newOrder, ...prev]);
         clearCart();
-        showAlert('Order Placed!', `(Simulation) Order #${String(newOrder.id).padStart(4, '0')} placed!\n- An admin will assign a pickup time shortly.\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
+        showAlert(
+            t('order.placed.title'), 
+            t('order.placed.message', { orderId: orderIdStr, email: user.email })
+        );
         return newOrder;
     };
     
@@ -294,6 +299,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (typeof orderOrId === 'number' && cartItems) {
             // This is the call from MenuPage or MyOrdersPage to update items from cart
             const orderId = orderOrId;
+            const orderIdStr = String(orderId).padStart(4, '0');
             setOrders(prevOrders => prevOrders.map(order => {
                 if (order.id === orderId) {
                     const updatedOrder = {
@@ -306,7 +312,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                         })),
                         totalAmount: cartItems.reduce((total, item) => total + item.menuItem.price * item.quantity, 0),
                     };
-                    showAlert('Order Updated', `(Simulation) Order #${String(orderId).padStart(4, '0')} has been updated!\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                    showAlert(
+                        t('order.updated.title'),
+                        t('order.updated.message', { orderId: orderIdStr, email: order.user.email })
+                    );
                     return updatedOrder;
                 }
                 return order;
@@ -337,9 +346,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
 
     const cancelOrder = (orderId: number) => {
+        const orderIdStr = String(orderId).padStart(4, '0');
         setOrders(prevOrders => prevOrders.map(order => {
             if (order.id === orderId) {
-                 showAlert('Order Cancelled', `(Simulation) Order #${String(orderId).padStart(4, '0')} has been cancelled.\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                showAlert(
+                    t('order.cancelled.title'), 
+                    t('order.cancelled.message', { orderId: orderIdStr, email: order.user.email })
+                );
                 return { ...order, status: 'cancelled' };
             }
             return order;
@@ -349,7 +362,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const clearAllOrders = (silent: boolean = false) => {
         setOrders([]);
         if (!silent) {
-            showAlert('Success', 'All orders have been cleared.');
+            showAlert(t('admin.settings.clearOrdersSuccessTitle'), t('admin.settings.clearOrdersSuccessMessage'));
         }
     };
     

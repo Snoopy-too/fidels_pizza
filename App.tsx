@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
+import { LocaleProvider } from './context/LocaleContext'; // Import LocaleProvider
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
@@ -106,9 +106,11 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
     return (
-        <AppProvider>
-            <AppContent />
-        </AppProvider>
+        <LocaleProvider>
+            <AppProvider>
+                <AppContent />
+            </AppProvider>
+        </LocaleProvider>
     );
 };
 

@@ -1,10 +1,12 @@
-
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useLocale } from '../context/LocaleContext';
+import LanguageSelector from './LanguageSelector';
 
 const Header: React.FC = () => {
     const { auth, logout } = useApp();
+    const { t } = useLocale();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -27,32 +29,34 @@ const Header: React.FC = () => {
         <header className="bg-white shadow-md sticky top-0 z-50">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                 <NavLink to="/" className="text-3xl font-bold text-stone-800 tracking-tight" onClick={closeMobileMenu}>
-                    Fidel's Pizza
+                    {t('header.title')}
                 </NavLink>
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-6 text-lg">
-                    <NavLink to="/" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Home</NavLink>
+                    <NavLink to="/" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>{t('header.home')}</NavLink>
                     {auth.isAuthenticated && (
                         <>
-                            <NavLink to="/menu" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Menu</NavLink>
-                            <NavLink to="/my-orders" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>My Orders</NavLink>
+                            <NavLink to="/menu" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>{t('header.menu')}</NavLink>
+                            <NavLink to="/my-orders" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>{t('header.myOrders')}</NavLink>
                         </>
                     )}
-                    {auth.user?.role === 'admin' && <NavLink to="/admin" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Admin</NavLink>}
+                    {auth.user?.role === 'admin' && <NavLink to="/admin" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>{t('header.admin')}</NavLink>}
                     
+                    <LanguageSelector />
+
                     {auth.isAuthenticated ? (
                         <div className="flex items-center space-x-4">
-                            <span className="text-stone-600 text-base whitespace-nowrap">Welcome, {auth.user?.name}</span>
+                            <span className="text-stone-600 text-base whitespace-nowrap">{t('header.welcome', { name: auth.user?.name || '' })}</span>
                             <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors">
-                                Logout
+                                {t('header.logout')}
                             </button>
                         </div>
                     ) : (
                         <div className="space-x-2">
-                            <NavLink to="/login" className="px-4 py-2 rounded-full hover:bg-stone-100 transition-colors">Login</NavLink>
+                            <NavLink to="/login" className="px-4 py-2 rounded-full hover:bg-stone-100 transition-colors">{t('header.login')}</NavLink>
                             <NavLink to="/register" className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors">
-                                Register
+                                {t('header.register')}
                             </NavLink>
                         </div>
                     )}
@@ -76,24 +80,26 @@ const Header: React.FC = () => {
             {isMobileMenuOpen && (
                 <div className="md:hidden bg-white border-t border-stone-200">
                     <nav className="flex flex-col items-center text-lg space-y-2 py-4 px-2">
-                        <NavLink to="/" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>Home</NavLink>
+                        <NavLink to="/" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>{t('header.home')}</NavLink>
                         {auth.isAuthenticated ? (
                             <>
-                                <NavLink to="/menu" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>Menu</NavLink>
-                                <NavLink to="/my-orders" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>My Orders</NavLink>
-                                {auth.user?.role === 'admin' && <NavLink to="/admin" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>Admin</NavLink>}
+                                <NavLink to="/menu" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>{t('header.menu')}</NavLink>
+                                <NavLink to="/my-orders" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>{t('header.myOrders')}</NavLink>
+                                {auth.user?.role === 'admin' && <NavLink to="/admin" onClick={closeMobileMenu} className={({ isActive }) => `w-full text-center py-2 rounded-md ${isActive ? mobileActiveLinkClass : mobileInactiveLinkClass}`}>{t('header.admin')}</NavLink>}
                                 <div className="pt-4 border-t w-full text-center space-y-3">
-                                    <span className="text-stone-600 text-base">Welcome, {auth.user?.name}</span>
+                                    <LanguageSelector />
+                                    <span className="text-stone-600 text-base">{t('header.welcome', { name: auth.user?.name || '' })}</span>
                                     <button onClick={handleLogout} className="w-11/12 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors">
-                                        Logout
+                                        {t('header.logout')}
                                     </button>
                                 </div>
                             </>
                         ) : (
                             <div className="pt-4 border-t w-full text-center space-y-3">
-                                <NavLink to="/login" onClick={closeMobileMenu} className="block w-11/12 mx-auto py-2 rounded-full hover:bg-stone-100 transition-colors border border-stone-300">Login</NavLink>
+                                <LanguageSelector />
+                                <NavLink to="/login" onClick={closeMobileMenu} className="block w-11/12 mx-auto py-2 rounded-full hover:bg-stone-100 transition-colors border border-stone-300">{t('header.login')}</NavLink>
                                 <NavLink to="/register" onClick={closeMobileMenu} className="block w-11/12 mx-auto bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors">
-                                    Register
+                                    {t('header.register')}
                                 </NavLink>
                             </div>
                         )}

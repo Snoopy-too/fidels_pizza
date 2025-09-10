@@ -1,0 +1,270 @@
+{
+    "header": {
+        "title": "フィデルのピザ",
+        "home": "ホーム",
+        "menu": "メニュー",
+        "myOrders": "私の注文",
+        "admin": "管理",
+        "welcome": "ようこそ、{{name}}さん",
+        "logout": "ログアウト",
+        "login": "ログイン",
+        "register": "登録"
+    },
+    "footer": {
+        "copy": "© {{year}} Fidel's Pizza Event. 無断複写・転載を禁じます。",
+        "crafted": "フィデルが赤穂で情熱を込めて作りました。"
+    },
+    "landingPage": {
+        "eventInfo": {
+            "date": "日付:",
+            "location": "場所:"
+        },
+        "registerNow": "今すぐ登録",
+        "preOrder": "ピザを事前注文",
+        "pastEventsTitle": "過去のイベントの様子"
+    },
+    "registerPage": {
+        "title": "イベントに登録",
+        "accessCodePrompt": "続行するには4桁のアクセスコードを入力してください。",
+        "accessCodeLabel": "アクセスコード",
+        "verifyCodeBtn": "コードを認証",
+        "invalidCodeError": "無効なアクセスコードです。",
+        "codeVerifiedSuccess": "コード認証完了！詳細情報を入力してください。",
+        "fullNameLabel": "氏名",
+        "emailLabel": "メールアドレス",
+        "passwordLabel": "パスワード",
+        "emailExistsError": "このメールアドレスは既に登録されています。",
+        "simulationNotice": "確認リンクがメールに送信されます（シミュレーション）。このデモではアカウントはすぐに有効になります。",
+        "createAccountBtn": "アカウント作成",
+        "successTitle": "登録成功！",
+        "successMessage": "メニューページにリダイレクトされます。"
+    },
+    "loginPage": {
+        "title": "ログイン",
+        "emailLabel": "メールアドレス",
+        "passwordLabel": "パスワード",
+        "passwordHint": "ヒント：どのユーザーでも「password」を使用してください。",
+        "invalidCredentialsError": "メールアドレスまたはパスワードが無効です。",
+        "signInBtn": "サインイン",
+        "forgotPasswordLink": "パスワードをお忘れですか？"
+    },
+    "menuPage": {
+        "title": "フィデルのピザメニュー",
+        "viewCartBtn": "カートを見る",
+        "addToOrderBtn": "注文に追加",
+        "unavailableBtn": "品切れ",
+        "loginRequiredTitle": "ログインが必要です",
+        "loginRequiredMessage": "注文するにはログインする必要があります。",
+        "emptyCartTitle": "カートは空です",
+        "emptyCartMessage": "カートに商品がありません。",
+        "cart": {
+            "title": "私のカート",
+            "empty": "カートは空です。メニューからピザを追加してください！",
+            "total": "合計:",
+            "clearBtn": "カートを空にする",
+            "placeOrderBtn": "注文を確定する",
+            "updateOrderBtn": "注文を更新する"
+        }
+    },
+    "myOrders": {
+        "title": "私のピザ注文",
+        "noOrders": "まだ注文がありません。メニューにアクセスして、おいしいピザを注文してください！",
+        "order": "注文",
+        "placedOn": "注文日:",
+        "pickupTime": "受け取り時間:",
+        "unassigned": "未割り当て",
+        "editOrderTitle": "ご注文の編集:",
+        "emptyOrder": "ご注文は空です。",
+        "summaryTitle": "注文概要:",
+        "total": "合計:",
+        "saveChangesBtn": "変更を保存",
+        "discardChangesBtn": "変更を破棄",
+        "updateOrderBtn": "注文を更新",
+        "cancelOrderBtn": "注文をキャンセル",
+        "confirmCancelTitle": "キャンセルの確認",
+        "confirmCancelMessage": "本当にこの注文をキャンセルしますか？この操作は元に戻せません。",
+        "confirmEmptyTitle": "空の注文",
+        "confirmEmptyMessage": "ご注文が空になりました。注文全体をキャンセルしますか？",
+        "confirmEmptyBtn": "はい、注文をキャンセルします"
+    },
+    "admin": {
+        "dashboard": {
+            "title": "管理者コントロールパネル",
+            "tabs": {
+                "orders": "注文管理",
+                "menu": "メニュー管理",
+                "settings": "イベント・サイト管理",
+                "profile": "マイプロフィール"
+            }
+        },
+        "orders": {
+            "title": "注文管理",
+            "filterPlaceholder": "顧客、商品、または注文番号でフィルタリング",
+            "selectedCount": "{{count}}件の注文が選択されています。",
+            "setPickupTime": "受取時間を設定...",
+            "applyBtn": "適用",
+            "headers": {
+                "id": "注文ID",
+                "customer": "顧客",
+                "items": "品数",
+                "total": "合計",
+                "pickupTime": "受取時間",
+                "date": "日付",
+                "status": "ステータス",
+                "actions": "操作"
+            },
+            "viewAction": "表示",
+            "notAvailable": "N/A",
+            "modalTitle": "注文番号 #{{orderId}}",
+            "customerLabel": "顧客:",
+            "itemsLabel": "商品:",
+            "totalLabel": "合計:",
+            "statusLabel": "ステータス:",
+            "pickupTimeLabel": "受取時間:",
+            "productionSummary": {
+                "title": "生産概要",
+                "totalPizza": "総ピザ生産数",
+                "pizzaType": "ピザの種類",
+                "total": "合計",
+                "byTime": "受取時間別生産数",
+                "time": "時間"
+            },
+            "bulkUpdateConfirmTitle": "一括更新の確認",
+            "bulkUpdateConfirmMessage": "選択した{{count}}件の注文の受取時間を{{pickupTime}}に設定してもよろしいですか？",
+            "bulkUpdateSuccessTitle": "更新成功",
+            "bulkUpdateSuccessMessage": "（シミュレーション）{{count}}件の注文が更新されました。顧客に通知が送信されました。",
+            "missingInfoTitle": "情報が不足しています",
+            "missingInfoMessage": "受け取り時間を選択してください。"
+        },
+        "menu": {
+            "title": "メニュー管理",
+            "addNewBtn": "新規商品を追加",
+            "statusLabel": "ステータス:",
+            "available": "利用可能",
+            "unavailable": "利用不可",
+            "editBtn": "編集",
+            "deleteBtn": "削除",
+            "modal": {
+                "editTitle": "メニュー商品を編集",
+                "addTitle": "新しいメニュー商品を追加",
+                "namePlaceholder": "名前",
+                "descriptionPlaceholder": "説明",
+                "pricePlaceholder": "価格",
+                "imageUrlPlaceholder": "画像URL",
+                "availableLabel": "利用可能",
+                "saveBtn": "変更を保存",
+                "addBtn": "商品を追加"
+            },
+            "confirmDeleteTitle": "削除の確認",
+            "confirmDeleteMessage": "本当にこの商品を削除しますか？"
+        },
+        "settings": {
+            "title": "イベント・サイト管理",
+            "eventDetails": {
+                "title": "イベント詳細",
+                "date": "イベント開催日",
+                "address": "イベント住所",
+                "saveBtn": "イベント詳細を保存"
+            },
+            "landingContent": {
+                "title": "ランディングページコンテンツ",
+                "pageTitle": "タイトル",
+                "description": "説明",
+                "imageUrls": "画像URL（カンマ区切り）",
+                "saveBtn": "ランディングページを保存"
+            },
+            "accessCode": {
+                "title": "登録アクセスコード",
+                "code": "4桁のコード",
+                "saveBtn": "アクセスコードを保存"
+            },
+            "dangerZone": {
+                "title": "危険区域",
+                "description": "この操作は、システムからすべての注文を永久に削除します。新しいイベントの前に古いデータを消去するのに役立ちます。この操作は元に戻せません。",
+                "clearOrdersBtn": "すべての注文をクリア"
+            },
+            "updateSuccessTitle": "成功",
+            "eventUpdateSuccess": "イベント情報が更新されました！",
+            "landingUpdateSuccess": "ランディングページのコンテンツが更新されました！",
+            "codeUpdateSuccess": "アクセスコードが更新されました！",
+            "clearOrdersConfirmTitle": "削除の確認",
+            "clearOrdersConfirmMessage": "本当によろしいですか？これにより、すべての注文が永久に削除されます。この操作は元に戻せません。",
+            "clearOrdersSuccessTitle": "成功",
+            "clearOrdersSuccessMessage": "すべての注文がクリアされました。"
+        }
+    },
+    "profile": {
+        "title": "マイプロフィール",
+        "noChanges": "保存する変更がありません。",
+        "notAuthenticated": "認証されていません。",
+        "incorrectPassword": "現在のパスワードが間違っています。",
+        "updateSuccess": "プロフィールが正常に更新されました。",
+        "passwordMismatch": "新しいパスワードが一致しません。",
+        "accountDetails": {
+            "title": "アカウント詳細",
+            "name": "名前",
+            "email": "メールアドレス"
+        },
+        "changePassword": {
+            "title": "パスワードの変更",
+            "current": "現在のパスワード",
+            "currentPlaceholder": "パスワード変更に必須",
+            "new": "新しいパスワード",
+            "newPlaceholder": "現状維持の場合は空欄",
+            "confirm": "新しいパスワードの確認"
+        },
+        "saveBtn": "変更を保存"
+    },
+    "forgotPassword": {
+        "title": "パスワードをお忘れですか",
+        "prompt": "メールアドレスを入力してください。パスワードをリセットするためのリンクを送信します。",
+        "emailLabel": "メールアドレス",
+        "sendBtn": "リセットリンクを送信",
+        "sendingBtn": "送信中...",
+        "backToLogin": "ログインに戻る",
+        "noAccount": "そのメールアドレスのアカウントが見つかりません。",
+        "resetLinkSentTitle": "リセットリンク送信（シミュレーション）",
+        "resetLinkSentMessage": "{{email}}にパスワードリセットリンクが送信されました。\n\nこのデモ用のリンクはこちらです:\n{{resetUrl}}",
+        "resetLinkSentSuccess": "{{email}}のアカウントが存在する場合、リセットリンクが送信されました。"
+    },
+    "resetPassword": {
+        "title": "パスワードをリセット",
+        "noToken": "リセットトークンが提供されていません。新しいリセットリンクをリクエストしてください。",
+        "requestNewLink": "新しいリンクをリクエスト",
+        "prompt": "新しいパスワードを入力してください。",
+        "success": "パスワードが正常にリセットされました。",
+        "redirecting": " ログインにリダイレクトしています...",
+        "invalidToken": "無効または期限切れのパスワードリセットトークンです。",
+        "passwordMismatch": "パスワードが一致しません。",
+        "passwordLengthError": "パスワードは6文字以上である必要があります。",
+        "newPassword": "新しいパスワード",
+        "confirmPassword": "新しいパスワードの確認",
+        "resetBtn": "パスワードをリセット",
+        "resettingBtn": "リセット中..."
+    },
+    "order": {
+        "status": {
+            "pending": "保留中",
+            "completed": "完了",
+            "cancelled": "キャンセル済み"
+        },
+        "placed": {
+            "title": "注文完了！",
+            "message": "（シミュレーション）注文番号#{{orderId}}を受け付けました！\n- 管理者がまもなく受け取り時間を割り当てます。\n- 確認メールが{{email}}に送信されました。\n- 管理者に通知が送信されました。"
+        },
+        "updated": {
+            "title": "注文更新",
+            "message": "（シミュレーション）注文番号#{{orderId}}が更新されました！\n- 確認メールが{{email}}に送信されました。\n- 管理者に通知が送信されました。"
+        },
+        "cancelled": {
+            "title": "注文キャンセル",
+            "message": "（シミュレーション）注文番号#{{orderId}}がキャンセルされました。\n- 確認メールが{{email}}に送信されました。\n- 管理者に通知が送信されました。"
+        }
+    },
+    "modal": {
+        "ok": "OK",
+        "confirm": "確認",
+        "cancel": "キャンセル"
+    },
+    "currency": "円"
+}

@@ -57,3 +57,5 @@ export interface ModalOptions {
     cancelText?: string;
     type: 'alert' | 'confirm';
 }
+
+export type Locale = 'en' | 'ja';

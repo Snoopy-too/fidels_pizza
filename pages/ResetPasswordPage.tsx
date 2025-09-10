@@ -1,10 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useLocale } from '../context/LocaleContext';
 
 const ResetPasswordPage: React.FC = () => {
     const { resetPassword } = useApp();
+    const { t } = useLocale();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     
@@ -17,21 +18,21 @@ const ResetPasswordPage: React.FC = () => {
     useEffect(() => {
         const urlToken = searchParams.get('token');
         if (!urlToken) {
-            setMessage({ type: 'error', text: "No reset token provided. Please request a new reset link." });
+            setMessage({ type: 'error', text: t('resetPassword.noToken') });
         }
         setToken(urlToken);
-    }, [searchParams]);
+    }, [searchParams, t]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!token) return;
 
         if (password !== confirmPassword) {
-            setMessage({ type: 'error', text: "Passwords do not match." });
+            setMessage({ type: 'error', text: t('resetPassword.passwordMismatch') });
             return;
         }
         if (password.length < 6) {
-             setMessage({ type: 'error', text: "Password must be at least 6 characters long." });
+             setMessage({ type: 'error', text: t('resetPassword.passwordLengthError') });
             return;
         }
 
@@ -52,26 +53,26 @@ const ResetPasswordPage: React.FC = () => {
 
     return (
         <div className="max-w-sm mx-auto bg-white p-8 rounded-xl shadow-lg">
-            <h2 className="text-3xl font-bold text-center text-stone-800 mb-6">Reset Password</h2>
+            <h2 className="text-3xl font-bold text-center text-stone-800 mb-6">{t('resetPassword.title')}</h2>
             
             {!token ? (
                  <div className="text-center">
                     {message && <p className="p-3 rounded-md text-sm bg-red-100 text-red-800">{message.text}</p>}
                     <Link to="/forgot-password" className="text-sm text-red-600 hover:underline mt-4 block">
-                        Request a new link
+                        {t('resetPassword.requestNewLink')}
                     </Link>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
-                     <p className="text-center text-stone-600">Please enter your new password.</p>
+                     <p className="text-center text-stone-600">{t('resetPassword.prompt')}</p>
                     {message && (
                         <div className={`p-3 rounded-md text-sm ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                             {message.text}
-                            {message.type === 'success' && " Redirecting to login..."}
+                            {message.type === 'success' && t('resetPassword.redirecting')}
                         </div>
                     )}
                     <div>
-                        <label className="block text-sm font-medium text-stone-700">New Password</label>
+                        <label className="block text-sm font-medium text-stone-700">{t('resetPassword.newPassword')}</label>
                         <input
                             type="password"
                             value={password}
@@ -81,7 +82,7 @@ const ResetPasswordPage: React.FC = () => {
                         />
                     </div>
                      <div>
-                        <label className="block text-sm font-medium text-stone-700">Confirm New Password</label>
+                        <label className="block text-sm font-medium text-stone-700">{t('resetPassword.confirmPassword')}</label>
                         <input
                             type="password"
                             value={confirmPassword}
@@ -91,7 +92,7 @@ const ResetPasswordPage: React.FC = () => {
                         />
                     </div>
                     <button type="submit" disabled={isLoading} className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 disabled:bg-stone-400">
-                        {isLoading ? 'Resetting...' : 'Reset Password'}
+                        {isLoading ? t('resetPassword.resettingBtn') : t('resetPassword.resetBtn')}
                     </button>
                 </form>
             )}
