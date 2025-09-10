@@ -25,6 +25,7 @@ interface AppContextType {
     // Fix: Overload updateOrder to handle both updating items from cart and updating an order object (e.g., status change).
     updateOrder: (orderOrId: Order | number, cartItems?: CartItem[]) => void;
     cancelOrder: (orderId: number) => void;
+    clearAllOrders: () => void;
     
     cart: CartItem[];
     addToCart: (item: MenuItem, quantity: number) => void;
@@ -186,8 +187,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const addOrder = (cartItems: CartItem[], user: User): Order | null => {
         if (cartItems.length === 0) return null;
 
+        const newOrderId = orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1;
+
         const newOrder: Order = {
-            id: Date.now(),
+            id: newOrderId,
             user,
             items: cartItems.map((cartItem): OrderItem => ({
                 id: Date.now() + cartItem.menuItem.id,
@@ -201,7 +204,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
         setOrders(prev => [newOrder, ...prev]);
         clearCart();
-        alert(`(Simulation) Order #${newOrder.id} placed!\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
+        alert(`(Simulation) Order #${String(newOrder.id).padStart(4, '0')} placed!\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
         return newOrder;
     };
     
@@ -223,7 +226,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                         totalAmount: cartItems.reduce((total, item) => total + item.menuItem.price * item.quantity, 0),
                         createdAt: new Date(),
                     };
-                    alert(`(Simulation) Order #${orderId} has been updated!\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                    alert(`(Simulation) Order #${String(orderId).padStart(4, '0')} has been updated!\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
                     return updatedOrder;
                 }
                 return order;
@@ -235,7 +238,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const updatedOrder = orderOrId as Order;
             setOrders(prevOrders => prevOrders.map(order => {
                 if (order.id === updatedOrder.id) {
-                    alert(`(Simulation) Order #${updatedOrder.id} has been updated!`);
+                    alert(`(Simulation) Order #${String(updatedOrder.id).padStart(4, '0')} has been updated!`);
                     return updatedOrder;
                 }
                 return order;
@@ -246,11 +249,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const cancelOrder = (orderId: number) => {
         setOrders(prevOrders => prevOrders.map(order => {
             if (order.id === orderId) {
-                 alert(`(Simulation) Order #${orderId} has been cancelled.\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                 alert(`(Simulation) Order #${String(orderId).padStart(4, '0')} has been cancelled.\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
                 return { ...order, status: 'cancelled' };
             }
             return order;
         }));
+    };
+
+    const clearAllOrders = () => {
+        setOrders([]);
+        alert('All orders have been cleared.');
     };
     
     const loadOrderForUpdate = (order: Order) => {
@@ -284,6 +292,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         addOrder,
         updateOrder,
         cancelOrder,
+        clearAllOrders,
         cart,
         addToCart,
         removeFromCart,

@@ -71,7 +71,7 @@ const AdminOrders: React.FC = () => {
                     <tbody>
                         {filteredAndSortedOrders.map(order => (
                             <tr key={order.id} className="hover:bg-stone-50">
-                                <td className="py-2 px-4 border-b">{order.id}</td>
+                                <td className="py-2 px-4 border-b">{String(order.id).padStart(4, '0')}</td>
                                 <td className="py-2 px-4 border-b">{order.user.name}</td>
                                 <td className="py-2 px-4 border-b">{order.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
                                 <td className="py-2 px-4 border-b">{order.totalAmount.toLocaleString()} JPY</td>
@@ -91,7 +91,7 @@ const AdminOrders: React.FC = () => {
                     </tbody>
                 </table>
             </div>
-            <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)} title={`Order #${selectedOrder?.id}`}>
+            <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)} title={`Order #${String(selectedOrder?.id).padStart(4, '0')}`}>
                 {selectedOrder && (
                     <div className="space-y-4">
                         <p><strong>Customer:</strong> {selectedOrder.user.name} ({selectedOrder.user.email})</p>

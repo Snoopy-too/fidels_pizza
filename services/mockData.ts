@@ -18,7 +18,7 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
 
 export const MOCK_ORDERS: Order[] = [
     {
-        id: 1000,
+        id: 1,
         user: MOCK_USERS[1],
         items: [
             { id: 1, menuItem: MOCK_MENU_ITEMS[0], quantity: 2, price: 1500 },
@@ -29,7 +29,7 @@ export const MOCK_ORDERS: Order[] = [
         createdAt: new Date('2023-10-26T10:00:00Z'),
     },
     {
-        id: 999,
+        id: 2,
         user: MOCK_USERS[2],
         items: [
             { id: 3, menuItem: MOCK_MENU_ITEMS[1], quantity: 3, price: 1800 },

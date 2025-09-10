@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 
 const AdminSiteSettings: React.FC = () => {
-    const { eventInfo, updateEventInfo, landingContent, updateLandingContent, accessCode, updateAccessCode } = useApp();
+    const { eventInfo, updateEventInfo, landingContent, updateLandingContent, accessCode, updateAccessCode, clearAllOrders } = useApp();
     
     const [localEventInfo, setLocalEventInfo] = useState(eventInfo);
     const [localLandingContent, setLocalLandingContent] = useState(landingContent);
@@ -25,6 +25,12 @@ const AdminSiteSettings: React.FC = () => {
         e.preventDefault();
         updateAccessCode(localAccessCode);
         alert('Access code updated!');
+    };
+
+    const handleClearOrders = () => {
+        if (window.confirm('ARE YOU SURE? This will permanently delete all orders. This cannot be undone.')) {
+            clearAllOrders();
+        }
     };
 
     return (
@@ -73,6 +79,21 @@ const AdminSiteSettings: React.FC = () => {
                     </div>
                     <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save Access Code</button>
                 </form>
+            </div>
+
+            <div>
+                <div className="p-4 border border-red-300 rounded-lg bg-red-50">
+                    <h3 className="text-xl font-semibold text-red-800">Danger Zone</h3>
+                    <p className="text-red-700 mt-2">
+                        This action will permanently delete all orders from the system. This is useful for clearing out old data before a new event. This action cannot be undone.
+                    </p>
+                    <button 
+                        onClick={handleClearOrders}
+                        className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                        Clear All Orders
+                    </button>
+                </div>
             </div>
         </div>
     );
