@@ -4,6 +4,7 @@ export const MOCK_USERS: User[] = [
     { id: 1, email: 'admin@fidel.com', name: 'Fidel Admin', role: 'admin', password: 'password' },
     { id: 2, email: 'user@example.com', name: 'Giovanni Rossi', role: 'user', password: 'password' },
     { id: 3, email: 'user2@example.com', name: 'Sofia Romano', role: 'user', password: 'password' },
+    { id: 4, email: 'admin@noriko.com', name: 'Noriko', role: 'admin', password: 'password' },
 ];
 
 export const MOCK_MENU_ITEMS: MenuItem[] = [
