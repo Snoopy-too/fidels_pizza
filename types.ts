@@ -1,9 +1,9 @@
-
 export interface User {
     id: number;
     email: string;
     name: string;
     role: 'user' | 'admin';
+    password?: string;
 }
 
 export interface MenuItem {

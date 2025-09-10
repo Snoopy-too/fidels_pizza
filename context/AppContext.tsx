@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import type { User, MenuItem, Order, EventInfo, LandingPageContent, CartItem } from '../types';
 import { MOCK_USERS, MOCK_MENU_ITEMS, MOCK_ORDERS, MOCK_EVENT_INFO, MOCK_LANDING_CONTENT, MOCK_ACCESS_CODE } from '../services/mockData';
@@ -10,9 +9,10 @@ interface AuthState {
 
 interface AppContextType {
     auth: AuthState;
-    login: (email: string, pass: string) => boolean;
+    login: (email: string, pass: string) => User | null;
     logout: () => void;
     register: (name: string, email: string, pass: string) => User | null;
+    updateUserProfile: (updates: { name?: string; email?: string; currentPassword?: string; newPassword?: string; }) => { success: boolean; message: string };
     eventInfo: EventInfo;
     updateEventInfo: (info: EventInfo) => void;
     landingContent: LandingPageContent;
@@ -44,14 +44,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [cart, setCart] = useState<CartItem[]>([]);
     const [users, setUsers] = useState<User[]>(MOCK_USERS);
 
-    const login = (email: string, pass: string): boolean => {
-        // In a real app, you'd check a hashed password
+    const login = (email: string, pass: string): User | null => {
         const user = users.find(u => u.email === email);
-        if (user && pass === 'password') { // Simplified login
+        if (user && pass === (user.password || 'password')) {
             setAuth({ isAuthenticated: true, user });
-            return true;
+            return user;
         }
-        return false;
+        return null;
     };
 
     const logout = () => {
@@ -61,12 +60,50 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const register = (name: string, email: string, pass: string): User | null => {
         if (users.some(u => u.email === email)) return null;
-        const newUser: User = { id: users.length + 1, name, email, role: 'user' };
+        const newUser: User = { id: users.length + 1, name, email, role: 'user', password: pass };
         setUsers(prev => [...prev, newUser]);
         setAuth({ isAuthenticated: true, user: newUser });
         return newUser;
     };
     
+    const updateUserProfile = (updates: { name?: string; email?: string; currentPassword?: string; newPassword?: string; }): { success: boolean; message: string } => {
+        if (!auth.user) {
+            return { success: false, message: "No user is logged in." };
+        }
+
+        const userIndex = users.findIndex(u => u.id === auth.user!.id);
+        if (userIndex === -1) {
+            return { success: false, message: "User not found." };
+        }
+
+        const currentUser = users[userIndex];
+        let updatedUser = { ...currentUser };
+
+        if (updates.newPassword) {
+            if (!updates.currentPassword || updates.currentPassword !== (currentUser.password || 'password')) {
+                return { success: false, message: "Current password is incorrect." };
+            }
+            updatedUser.password = updates.newPassword;
+        }
+
+        if (updates.name) {
+            updatedUser.name = updates.name;
+        }
+        if (updates.email) {
+            if (updates.email !== currentUser.email && users.some(u => u.email === updates.email)) {
+                 return { success: false, message: "Email already in use." };
+            }
+            updatedUser.email = updates.email;
+        }
+
+        const newUsers = [...users];
+        newUsers[userIndex] = updatedUser;
+        setUsers(newUsers);
+        setAuth(prevAuth => ({ ...prevAuth, user: updatedUser }));
+
+        return { success: true, message: "Profile updated successfully!" };
+    };
+
     const updateEventInfo = (info: EventInfo) => setEventInfo(info);
     const updateLandingContent = (content: LandingPageContent) => setLandingContent(content);
     const updateAccessCode = (code: string) => setAccessCode(code);
@@ -134,6 +171,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const value = {
         auth, login, logout, register,
+        updateUserProfile,
         eventInfo, updateEventInfo,
         landingContent, updateLandingContent,
         accessCode, updateAccessCode,
@@ -152,4 +190,3 @@ export const useApp = () => {
     }
     return context;
 };
-

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -12,11 +11,9 @@ const LoginPage: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const success = login(email, password);
-        if (success) {
-            // useApp context will update the auth state, role will be checked in redirection
-            const userRole = JSON.parse(localStorage.getItem('auth') || '{}').user?.role;
-            if (userRole === 'admin') {
+        const user = login(email, password);
+        if (user) {
+            if (user.role === 'admin') {
               navigate('/admin');
             } else {
               navigate('/menu');
