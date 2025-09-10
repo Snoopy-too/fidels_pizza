@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { MenuItem } from '../types';
 import Modal from '../components/Modal';
+import { PICKUP_TIMES } from '../services/mockData';
 
 const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void }> = ({ item, onAddToCart }) => {
     return (
@@ -28,6 +30,7 @@ const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void
 const MenuPage: React.FC = () => {
     const { menuItems, addToCart, cart, removeFromCart, updateCartItemQuantity, getCartTotal, addOrder, updateOrder, auth, clearCart, orderBeingUpdated } = useApp();
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [pickupTime, setPickupTime] = useState(PICKUP_TIMES[0]);
 
     const handleAddToCart = (item: MenuItem) => {
         addToCart(item, 1);
@@ -45,9 +48,9 @@ const MenuPage: React.FC = () => {
         }
 
         if (orderBeingUpdated) {
-            updateOrder(orderBeingUpdated, cart);
+            updateOrder(orderBeingUpdated, cart, pickupTime);
         } else {
-            addOrder(cart, auth.user);
+            addOrder(cart, auth.user, pickupTime);
         }
         
         setIsCartOpen(false);
@@ -55,8 +58,8 @@ const MenuPage: React.FC = () => {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-10">
-                <h1 className="text-4xl font-bold">Fidel's Pizza Menu</h1>
+            <div className="flex justify-between items-center mb-10 flex-wrap gap-4">
+                <h1 className="text-3xl md:text-4xl font-bold">Fidel's Pizza Menu</h1>
                 <button onClick={() => setIsCartOpen(true)} className="relative bg-green-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-700 transition-transform hover:scale-105 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -100,6 +103,17 @@ const MenuPage: React.FC = () => {
                         ))}
                         <div className="text-right font-bold text-xl mt-4 pt-4 border-t">
                             Total: {getCartTotal().toLocaleString()} JPY
+                        </div>
+                        <div className="pt-4 border-t">
+                            <label htmlFor="pickupTime" className="block text-sm font-medium text-stone-700 mb-1">Select Pick-up Time:</label>
+                            <select
+                                id="pickupTime"
+                                value={pickupTime}
+                                onChange={(e) => setPickupTime(e.target.value)}
+                                className="w-full p-2 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
+                            >
+                                {PICKUP_TIMES.map(time => <option key={time} value={time}>{time}</option>)}
+                            </select>
                         </div>
                          <div className="flex justify-between mt-6">
                              <button onClick={() => clearCart()} className="bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600">

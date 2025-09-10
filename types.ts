@@ -34,6 +34,7 @@ export interface Order {
     totalAmount: number;
     status: 'pending' | 'completed' | 'cancelled';
     createdAt: Date;
+    pickupTime?: string;
 }
 
 export interface EventInfo {

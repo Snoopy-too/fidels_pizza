@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Order, CartItem } from '../types';
+import { PICKUP_TIMES } from '../services/mockData';
 
 const MyOrdersPage: React.FC = () => {
     const { auth, orders, cancelOrder, updateOrder } = useApp();
     const [editingOrderId, setEditingOrderId] = useState<number | null>(null);
     const [editedItems, setEditedItems] = useState<CartItem[]>([]);
+    const [editedPickupTime, setEditedPickupTime] = useState<string>('');
 
     if (!auth.user) {
         return <p>Please log in to see your orders.</p>;
@@ -25,7 +27,7 @@ const MyOrdersPage: React.FC = () => {
 
     const handleStartUpdate = (order: Order) => {
         setEditingOrderId(order.id);
-        // Create a deep copy of items for editing
+        setEditedPickupTime(order.pickupTime || PICKUP_TIMES[0]);
         setEditedItems(order.items.map(item => ({
             menuItem: item.menuItem,
             quantity: item.quantity,
@@ -35,6 +37,7 @@ const MyOrdersPage: React.FC = () => {
     const handleCancelUpdate = () => {
         setEditingOrderId(null);
         setEditedItems([]);
+        setEditedPickupTime('');
     };
 
     const handleSaveChanges = () => {
@@ -44,7 +47,7 @@ const MyOrdersPage: React.FC = () => {
                     cancelOrder(editingOrderId);
                 }
             } else {
-                updateOrder(editingOrderId, editedItems);
+                updateOrder(editingOrderId, editedItems, editedPickupTime);
             }
             handleCancelUpdate(); // Exit editing mode
         }
@@ -53,13 +56,10 @@ const MyOrdersPage: React.FC = () => {
     const handleItemQuantityChange = (itemId: number, newQuantity: number) => {
         setEditedItems(currentItems => {
             if (newQuantity <= 0) {
-                // Remove item if quantity is 0 or less
                 return currentItems.filter(item => item.menuItem.id !== itemId);
             }
-            // Update quantity for existing item
             return currentItems.map(item => {
                 if (item.menuItem.id === itemId) {
-                    // Enforce max quantity of 15
                     return { ...item, quantity: Math.min(newQuantity, 15) };
                 }
                 return item;
@@ -82,6 +82,7 @@ const MyOrdersPage: React.FC = () => {
                         <p className="text-sm text-stone-500">
                             Placed on: {new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
+                        <p className="text-sm text-stone-500">Pick-up Time: <span className="font-semibold">{isEditing ? editedPickupTime : order.pickupTime}</span></p>
                     </div>
                     <span className={`px-3 py-1 text-sm font-semibold rounded-full capitalize ${
                         order.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -91,7 +92,6 @@ const MyOrdersPage: React.FC = () => {
                 </div>
                 
                 {isEditing ? (
-                    // EDITING VIEW
                     <div className="space-y-3">
                         <h3 className="text-lg font-semibold mb-2">Edit Your Order:</h3>
                         {editedItems.length > 0 ? editedItems.map(item => (
@@ -104,9 +104,19 @@ const MyOrdersPage: React.FC = () => {
                                 </div>
                             </div>
                         )) : <p className="text-stone-500">Your order is empty.</p>}
+                        <div className="pt-2">
+                           <label htmlFor="pickupTimeEdit" className="block text-sm font-medium text-stone-700 mb-1">Change Pick-up Time:</label>
+                           <select
+                               id="pickupTimeEdit"
+                               value={editedPickupTime}
+                               onChange={(e) => setEditedPickupTime(e.target.value)}
+                               className="w-full p-2 border border-stone-300 rounded-md"
+                           >
+                               {PICKUP_TIMES.map(time => <option key={time} value={time}>{time}</option>)}
+                           </select>
+                        </div>
                     </div>
                 ) : (
-                    // NORMAL VIEW
                     <div>
                         <h3 className="text-lg font-semibold mb-2">Order Summary:</h3>
                         <ul className="list-disc pl-5 space-y-1 text-stone-700">

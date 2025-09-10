@@ -27,6 +27,7 @@ export const MOCK_ORDERS: Order[] = [
         totalAmount: 5000,
         status: 'completed',
         createdAt: new Date('2023-10-26T10:00:00Z'),
+        pickupTime: '18:00',
     },
     {
         id: 2,
@@ -37,6 +38,7 @@ export const MOCK_ORDERS: Order[] = [
         totalAmount: 5400,
         status: 'pending',
         createdAt: new Date('2023-10-27T11:30:00Z'),
+        pickupTime: '18:30',
     },
 ];
 
@@ -56,3 +58,5 @@ export const MOCK_LANDING_CONTENT: LandingPageContent = {
 };
 
 export const MOCK_ACCESS_CODE = '1234';
+
+export const PICKUP_TIMES = ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00'];

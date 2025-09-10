@@ -8,18 +8,24 @@ const LandingPage: React.FC = () => {
 
     return (
         <div className="space-y-12">
-            <section className="text-center bg-white p-12 rounded-lg shadow-lg" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/pinstripe.png')` }}>
-                <h1 className="text-6xl font-bold text-red-700 mb-4">{landingContent.title}</h1>
-                <p className="text-2xl text-stone-600 mb-6">{landingContent.description}</p>
-                <div className="text-xl font-semibold bg-green-600 text-white inline-block px-6 py-3 rounded-full shadow-md">
-                    <p>Date: {new Date(eventInfo.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                    <p>Location: {eventInfo.address}</p>
+            <section className="text-center bg-white p-6 md:p-12 rounded-lg shadow-lg" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/pinstripe.png')` }}>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-red-700 mb-4">{landingContent.title}</h1>
+                <p className="text-lg md:text-2xl text-stone-600 mb-8">{landingContent.description}</p>
+                
+                <div className="w-64 h-64 md:w-80 md:h-80 bg-green-600 text-white rounded-full shadow-md flex flex-col items-center justify-center mx-auto mb-8 p-4">
+                    <div className="text-lg md:text-xl font-semibold text-center">
+                        <p>Date:</p>
+                        <p className="font-bold">{new Date(eventInfo.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <p className="mt-4">Location:</p>
+                        <p className="font-bold leading-tight">{eventInfo.address}</p>
+                    </div>
                 </div>
-                <div className="mt-8 space-x-4">
-                    <Link to="/register" className="bg-red-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-red-700 transition-transform hover:scale-105">
+
+                <div className="mt-8 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <Link to="/register" className="w-full md:w-auto bg-red-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-red-700 transition-transform hover:scale-105">
                         Register Now
                     </Link>
-                    <Link to="/menu" className="bg-white text-red-600 border-2 border-red-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-red-50 transition-transform hover:scale-105">
+                    <Link to="/menu" className="w-full md:w-auto bg-white text-red-600 border-2 border-red-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-red-50 transition-transform hover:scale-105">
                         Pre-Order Pizza
                     </Link>
                 </div>
