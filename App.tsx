@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import MenuPage from './pages/MenuPage';
 import AdminDashboard from './pages/AdminDashboard';
+import MyOrdersPage from './pages/MyOrdersPage';
 
 const PrivateRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
     const { auth } = useApp();
@@ -34,6 +35,11 @@ const AppContent: React.FC = () => {
                         <Route path="/menu" element={
                             <UserRoute>
                                 <MenuPage />
+                            </UserRoute>
+                        } />
+                        <Route path="/my-orders" element={
+                            <UserRoute>
+                                <MyOrdersPage />
                             </UserRoute>
                         } />
                         <Route path="/admin" element={

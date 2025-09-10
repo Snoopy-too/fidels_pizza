@@ -23,7 +23,12 @@ const Header: React.FC = () => {
                 </NavLink>
                 <nav className="hidden md:flex items-center space-x-6 text-lg">
                     <NavLink to="/" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Home</NavLink>
-                    {auth.isAuthenticated && <NavLink to="/menu" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Menu</NavLink>}
+                    {auth.isAuthenticated && (
+                        <>
+                            <NavLink to="/menu" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Menu</NavLink>
+                            <NavLink to="/my-orders" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>My Orders</NavLink>
+                        </>
+                    )}
                     {auth.user?.role === 'admin' && <NavLink to="/admin" className={({ isActive }) => isActive ? activeLinkClass : inactiveLinkClass}>Admin</NavLink>}
                     
                     {auth.isAuthenticated ? (
