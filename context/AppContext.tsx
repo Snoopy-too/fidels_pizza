@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import type { User, MenuItem, Order, CartItem, EventInfo, LandingPageContent, OrderItem } from '../types';
+
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import type { User, MenuItem, Order, CartItem, EventInfo, LandingPageContent, OrderItem, ModalOptions } from '../types';
 import { MOCK_USERS, MOCK_MENU_ITEMS, MOCK_ORDERS, MOCK_EVENT_INFO, MOCK_LANDING_CONTENT, MOCK_ACCESS_CODE } from '../services/mockData';
 
 // Define the shape of the context state
@@ -27,7 +28,7 @@ interface AppContextType {
     updateOrder: (orderOrId: Order | number, cartItems?: CartItem[]) => void;
     bulkUpdateOrders: (orderIds: Set<number>, updates: Partial<Order>) => void;
     cancelOrder: (orderId: number) => void;
-    clearAllOrders: () => void;
+    clearAllOrders: (silent?: boolean) => void;
     
     cart: CartItem[];
     addToCart: (item: MenuItem, quantity: number) => void;
@@ -47,6 +48,13 @@ interface AppContextType {
     
     orderBeingUpdated: number | null;
     loadOrderForUpdate: (order: Order) => void;
+
+    // Modal context
+    showModal: (options: Omit<ModalOptions, 'type'> & { onConfirm?: () => void }) => void;
+    showAlert: (title: string, message: string, onOk?: () => void) => void;
+    showConfirm: (title: string, message: string, onConfirm: () => void, confirmText?: string) => void;
+    hideModal: () => void;
+    modalState: ModalOptions | null;
 }
 
 // Create the context
@@ -68,7 +76,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [accessCode, setAccessCode] = useState<string>(MOCK_ACCESS_CODE);
     const [orderBeingUpdated, setOrderBeingUpdated] = useState<number | null>(null);
     const [passwordResetTokens, setPasswordResetTokens] = useState<Map<string, { email: string; expires: number }>>(new Map());
+    const [modalState, setModalState] = useState<ModalOptions | null>(null);
 
+    // --- Modal Functions ---
+    const showModal = useCallback((options: Omit<ModalOptions, 'type'> & { onConfirm?: () => void }) => {
+        setModalState({
+            ...options,
+            type: options.onConfirm ? 'confirm' : 'alert',
+        });
+    }, []);
+    
+    const showAlert = useCallback((title: string, message: string, onOk?: () => void) => {
+        showModal({ title, message, onConfirm: onOk });
+    }, [showModal]);
+
+    const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, confirmText: string = 'Confirm') => {
+        showModal({ title, message, onConfirm, confirmText });
+    }, [showModal]);
+
+    const hideModal = useCallback(() => {
+        setModalState(null);
+    }, []);
 
     // --- Auth Functions ---
     const login = (email: string, password: string): User | null => {
@@ -143,7 +171,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         // Simulate sending email
         const resetUrl = `${window.location.origin}${window.location.pathname}#/reset-password?token=${token}`;
-        alert(`(Simulation) Password reset link sent to ${email}.\n\nClick here to reset: ${resetUrl}`);
+        showAlert("Reset Link Sent (Simulation)", `A password reset link has been sent to ${email}.\n\nFor this demo, the link is:\n${resetUrl}`);
 
         return { success: true, message: `If an account exists for ${email}, a reset link has been sent.` };
     };
@@ -258,7 +286,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
         setOrders(prev => [newOrder, ...prev]);
         clearCart();
-        alert(`(Simulation) Order #${String(newOrder.id).padStart(4, '0')} placed!\n- An admin will assign a pickup time shortly.\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
+        showAlert('Order Placed!', `(Simulation) Order #${String(newOrder.id).padStart(4, '0')} placed!\n- An admin will assign a pickup time shortly.\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
         return newOrder;
     };
     
@@ -278,7 +306,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                         })),
                         totalAmount: cartItems.reduce((total, item) => total + item.menuItem.price * item.quantity, 0),
                     };
-                    alert(`(Simulation) Order #${String(orderId).padStart(4, '0')} has been updated!\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                    showAlert('Order Updated', `(Simulation) Order #${String(orderId).padStart(4, '0')} has been updated!\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
                     return updatedOrder;
                 }
                 return order;
@@ -311,16 +339,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const cancelOrder = (orderId: number) => {
         setOrders(prevOrders => prevOrders.map(order => {
             if (order.id === orderId) {
-                 alert(`(Simulation) Order #${String(orderId).padStart(4, '0')} has been cancelled.\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                 showAlert('Order Cancelled', `(Simulation) Order #${String(orderId).padStart(4, '0')} has been cancelled.\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
                 return { ...order, status: 'cancelled' };
             }
             return order;
         }));
     };
 
-    const clearAllOrders = () => {
+    const clearAllOrders = (silent: boolean = false) => {
         setOrders([]);
-        alert('All orders have been cleared.');
+        if (!silent) {
+            showAlert('Success', 'All orders have been cleared.');
+        }
     };
     
     const loadOrderForUpdate = (order: Order) => {
@@ -371,7 +401,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         accessCode,
         updateAccessCode,
         orderBeingUpdated,
-        loadOrderForUpdate
+        loadOrderForUpdate,
+        // Modal functions
+        showModal,
+        showAlert,
+        showConfirm,
+        hideModal,
+        modalState,
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,3 +1,4 @@
+
 export interface User {
     id: number;
     email: string;
@@ -46,4 +47,13 @@ export interface LandingPageContent {
     title: string;
     description: string;
     images: string[];
+}
+
+export interface ModalOptions {
+    title: string;
+    message: string;
+    onConfirm?: () => void;
+    confirmText?: string;
+    cancelText?: string;
+    type: 'alert' | 'confirm';
 }

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 
 const AdminSiteSettings: React.FC = () => {
-    const { eventInfo, updateEventInfo, landingContent, updateLandingContent, accessCode, updateAccessCode, clearAllOrders } = useApp();
+    const { eventInfo, updateEventInfo, landingContent, updateLandingContent, accessCode, updateAccessCode, clearAllOrders, showAlert, showConfirm } = useApp();
     
     const [localEventInfo, setLocalEventInfo] = useState(eventInfo);
     const [localLandingContent, setLocalLandingContent] = useState(landingContent);
@@ -12,25 +12,30 @@ const AdminSiteSettings: React.FC = () => {
     const handleEventSave = (e: React.FormEvent) => {
         e.preventDefault();
         updateEventInfo(localEventInfo);
-        alert('Event information updated!');
+        showAlert('Success', 'Event information updated!');
     };
     
     const handleLandingSave = (e: React.FormEvent) => {
         e.preventDefault();
         updateLandingContent(localLandingContent);
-        alert('Landing page content updated!');
+        showAlert('Success', 'Landing page content updated!');
     };
     
     const handleCodeSave = (e: React.FormEvent) => {
         e.preventDefault();
         updateAccessCode(localAccessCode);
-        alert('Access code updated!');
+        showAlert('Success', 'Access code updated!');
     };
 
     const handleClearOrders = () => {
-        if (window.confirm('ARE YOU SURE? This will permanently delete all orders. This cannot be undone.')) {
-            clearAllOrders();
-        }
+        showConfirm(
+            'Confirm Deletion',
+            'ARE YOU SURE? This will permanently delete all orders. This cannot be undone.',
+            () => {
+                clearAllOrders(true);
+                showAlert('Success', 'All orders have been cleared.');
+            }
+        );
     };
 
     return (

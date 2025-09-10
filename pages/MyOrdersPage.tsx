@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Order, CartItem } from '../types';
 
 const MyOrdersPage: React.FC = () => {
-    const { auth, orders, cancelOrder, updateOrder } = useApp();
+    const { auth, orders, cancelOrder, updateOrder, showConfirm } = useApp();
     const [editingOrderId, setEditingOrderId] = useState<number | null>(null);
     const [editedItems, setEditedItems] = useState<CartItem[]>([]);
 
@@ -14,13 +15,17 @@ const MyOrdersPage: React.FC = () => {
     const userOrders = orders.filter(order => order.user.id === auth.user!.id);
 
     const handleCancelOrder = (orderId: number) => {
-        if (window.confirm('Are you sure you want to cancel this order? This action cannot be undone.')) {
-            cancelOrder(orderId);
-            if (editingOrderId === orderId) {
-                setEditingOrderId(null);
-                setEditedItems([]);
+        showConfirm(
+            'Confirm Cancellation', 
+            'Are you sure you want to cancel this order? This action cannot be undone.',
+            () => {
+                cancelOrder(orderId);
+                if (editingOrderId === orderId) {
+                    setEditingOrderId(null);
+                    setEditedItems([]);
+                }
             }
-        }
+        );
     };
 
     const handleStartUpdate = (order: Order) => {
@@ -39,13 +44,19 @@ const MyOrdersPage: React.FC = () => {
     const handleSaveChanges = () => {
         if (editingOrderId) {
             if (editedItems.reduce((sum, item) => sum + item.quantity, 0) === 0) {
-                 if (window.confirm('Your order is now empty. Would you like to cancel the entire order?')) {
-                    cancelOrder(editingOrderId);
-                }
+                 showConfirm(
+                    'Empty Order',
+                    'Your order is now empty. Would you like to cancel the entire order?',
+                    () => {
+                        cancelOrder(editingOrderId);
+                        handleCancelUpdate(); // Exit editing mode
+                    },
+                    'Yes, Cancel Order'
+                );
             } else {
                 updateOrder(editingOrderId, editedItems);
+                handleCancelUpdate(); // Exit editing mode
             }
-            handleCancelUpdate(); // Exit editing mode
         }
     };
     

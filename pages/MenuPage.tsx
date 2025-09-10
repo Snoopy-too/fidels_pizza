@@ -27,7 +27,7 @@ const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void
 };
 
 const MenuPage: React.FC = () => {
-    const { menuItems, addToCart, cart, removeFromCart, updateCartItemQuantity, getCartTotal, addOrder, updateOrder, auth, clearCart, orderBeingUpdated } = useApp();
+    const { menuItems, addToCart, cart, removeFromCart, updateCartItemQuantity, getCartTotal, addOrder, updateOrder, auth, clearCart, orderBeingUpdated, showAlert } = useApp();
     const [isCartOpen, setIsCartOpen] = useState(false);
 
     const handleAddToCart = (item: MenuItem) => {
@@ -36,12 +36,12 @@ const MenuPage: React.FC = () => {
     
     const handleSubmitOrder = () => {
         if (!auth.user) {
-            alert("You must be logged in to place an order.");
+            showAlert("Login Required", "You must be logged in to place an order.");
             return;
         }
 
         if (cart.length === 0) {
-            alert("Your cart is empty.");
+            showAlert("Empty Cart", "Your cart is empty.");
             return;
         }
 

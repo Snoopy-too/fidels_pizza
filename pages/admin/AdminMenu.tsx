@@ -13,7 +13,7 @@ const EMPTY_MENU_ITEM: Omit<MenuItem, 'id'> = {
 };
 
 const AdminMenu: React.FC = () => {
-    const { menuItems, updateMenuItem, addMenuItem, deleteMenuItem } = useApp();
+    const { menuItems, updateMenuItem, addMenuItem, deleteMenuItem, showConfirm } = useApp();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState<MenuItem | Omit<MenuItem, 'id'>>(EMPTY_MENU_ITEM);
     const [isEditing, setIsEditing] = useState(false);
@@ -40,9 +40,11 @@ const AdminMenu: React.FC = () => {
     };
     
     const handleDelete = (id: number) => {
-        if (window.confirm('Are you sure you want to delete this item?')) {
-            deleteMenuItem(id);
-        }
+        showConfirm(
+            'Confirm Deletion',
+            'Are you sure you want to delete this item?',
+            () => deleteMenuItem(id)
+        );
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

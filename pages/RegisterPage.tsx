@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 const RegisterPage: React.FC = () => {
-    const { register, accessCode: correctAccessCode } = useApp();
+    const { register, accessCode: correctAccessCode, showAlert } = useApp();
     const navigate = useNavigate();
     const [enteredCode, setEnteredCode] = useState('');
     const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -30,8 +30,9 @@ const RegisterPage: React.FC = () => {
         const newUser = register(formData.name, formData.email, formData.password);
         if (newUser) {
             // In a real app, this would be after email confirmation
-            alert('Registration successful! You will be redirected to the menu.');
-            navigate('/menu');
+            showAlert('Registration Successful!', 'You will be redirected to the menu.', () => {
+                navigate('/menu');
+            });
         } else {
             setError('An account with this email already exists.');
         }

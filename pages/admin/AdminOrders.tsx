@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import type { Order, MenuItem } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -109,7 +110,7 @@ const ProductionSummary: React.FC<{ orders: Order[], menuItems: MenuItem[] }> = 
 
 
 const AdminOrders: React.FC = () => {
-    const { orders, updateOrder, menuItems, bulkUpdateOrders } = useApp();
+    const { orders, updateOrder, menuItems, bulkUpdateOrders, showAlert, showConfirm } = useApp();
     const [filter, setFilter] = useState('');
     const [sortBy, setSortBy] = useState<{ key: keyof Order | 'user.name' | 'totalAmount' | 'pickupTime'; direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -179,15 +180,19 @@ const AdminOrders: React.FC = () => {
 
     const handleBulkUpdate = () => {
         if (!bulkPickupTime) {
-            alert('Please select a pick-up time.');
+            showAlert('Missing Information', 'Please select a pick-up time.');
             return;
         }
-        if (window.confirm(`Are you sure you want to set the pick-up time to ${bulkPickupTime} for ${selectedOrderIds.size} selected orders?`)) {
-            bulkUpdateOrders(selectedOrderIds, { pickupTime: bulkPickupTime });
-            alert(`(Simulation) ${selectedOrderIds.size} orders have been updated. Notifications sent to customers.`);
-            setSelectedOrderIds(new Set());
-            setBulkPickupTime('');
-        }
+        showConfirm(
+            'Confirm Bulk Update',
+            `Are you sure you want to set the pick-up time to ${bulkPickupTime} for ${selectedOrderIds.size} selected orders?`,
+            () => {
+                bulkUpdateOrders(selectedOrderIds, { pickupTime: bulkPickupTime });
+                showAlert('Update Successful', `(Simulation) ${selectedOrderIds.size} orders have been updated. Notifications sent to customers.`);
+                setSelectedOrderIds(new Set());
+                setBulkPickupTime('');
+            }
+        );
     };
 
     return (
