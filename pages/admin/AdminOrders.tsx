@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import type { Order, MenuItem } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -110,10 +109,12 @@ const ProductionSummary: React.FC<{ orders: Order[], menuItems: MenuItem[] }> = 
 
 
 const AdminOrders: React.FC = () => {
-    const { orders, updateOrder, menuItems } = useApp();
+    const { orders, updateOrder, menuItems, bulkUpdateOrders } = useApp();
     const [filter, setFilter] = useState('');
     const [sortBy, setSortBy] = useState<{ key: keyof Order | 'user.name' | 'totalAmount' | 'pickupTime'; direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number>>(new Set());
+    const [bulkPickupTime, setBulkPickupTime] = useState('');
 
     const filteredAndSortedOrders = useMemo(() => {
         return orders
@@ -155,6 +156,40 @@ const AdminOrders: React.FC = () => {
         setSelectedOrder(prev => prev ? updatedOrder : null);
     };
 
+    const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            const allVisibleIds = filteredAndSortedOrders.map(o => o.id);
+            setSelectedOrderIds(new Set(allVisibleIds));
+        } else {
+            setSelectedOrderIds(new Set());
+        }
+    };
+
+    const handleSelectOne = (orderId: number) => {
+        setSelectedOrderIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(orderId)) {
+                newSet.delete(orderId);
+            } else {
+                newSet.add(orderId);
+            }
+            return newSet;
+        });
+    };
+
+    const handleBulkUpdate = () => {
+        if (!bulkPickupTime) {
+            alert('Please select a pick-up time.');
+            return;
+        }
+        if (window.confirm(`Are you sure you want to set the pick-up time to ${bulkPickupTime} for ${selectedOrderIds.size} selected orders?`)) {
+            bulkUpdateOrders(selectedOrderIds, { pickupTime: bulkPickupTime });
+            alert(`(Simulation) ${selectedOrderIds.size} orders have been updated. Notifications sent to customers.`);
+            setSelectedOrderIds(new Set());
+            setBulkPickupTime('');
+        }
+    };
+
     return (
         <div>
             <h2 className="text-3xl font-bold mb-4">Manage Orders</h2>
@@ -165,10 +200,44 @@ const AdminOrders: React.FC = () => {
                 onChange={e => setFilter(e.target.value)}
                 className="w-full p-2 border rounded-md mb-4"
             />
+
+            {selectedOrderIds.size > 0 && (
+                <div className="bg-blue-100 border border-blue-300 text-blue-800 p-3 rounded-md mb-4 flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                        <span className="font-semibold">{selectedOrderIds.size}</span> order(s) selected.
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <select
+                            value={bulkPickupTime}
+                            onChange={e => setBulkPickupTime(e.target.value)}
+                            className="p-2 border rounded-md bg-white text-stone-800 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">Set Pick-up Time...</option>
+                            {PICKUP_TIMES.map(time => <option key={time} value={time}>{time}</option>)}
+                        </select>
+                        <button
+                            onClick={handleBulkUpdate}
+                            disabled={!bulkPickupTime}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
+                        >
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white border">
                     <thead className="bg-stone-100">
                         <tr>
+                            <th className="py-2 px-4 border-b">
+                                <input
+                                    type="checkbox"
+                                    onChange={handleSelectAll}
+                                    checked={filteredAndSortedOrders.length > 0 && selectedOrderIds.size === filteredAndSortedOrders.length}
+                                    className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                                />
+                            </th>
                             {['Order ID', 'Customer', 'Items', 'Total', 'Pick-up Time', 'Date', 'Status', 'Actions'].map((header, i) => {
                                const keys: (keyof Order | 'user.name' | 'totalAmount' | 'pickupTime' | null)[] = ['id', 'user.name', null, 'totalAmount', 'pickupTime', 'createdAt', 'status', null];
                                return (
@@ -179,7 +248,15 @@ const AdminOrders: React.FC = () => {
                     </thead>
                     <tbody>
                         {filteredAndSortedOrders.map(order => (
-                            <tr key={order.id} className="hover:bg-stone-50">
+                            <tr key={order.id} className={`hover:bg-stone-50 transition-colors ${selectedOrderIds.has(order.id) ? 'bg-blue-50' : ''}`}>
+                                <td className="py-2 px-4 border-b">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedOrderIds.has(order.id)}
+                                        onChange={() => handleSelectOne(order.id)}
+                                        className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                                    />
+                                </td>
                                 <td className="py-2 px-4 border-b">{String(order.id).padStart(4, '0')}</td>
                                 <td className="py-2 px-4 border-b">{order.user.name}</td>
                                 <td className="py-2 px-4 border-b">{order.items.reduce((sum, item) => sum + item.quantity, 0)}</td>

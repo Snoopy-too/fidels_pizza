@@ -12,7 +12,9 @@ interface AppContextType {
     logout: () => void;
     register: (name: string, email: string, password: string) => User | null;
     updateUserProfile: (updates: { name?: string; email?: string; currentPassword?: string; newPassword?: string; }) => { success: boolean, message: string };
-    
+    requestPasswordReset: (email: string) => { success: boolean; message: string };
+    resetPassword: (token: string, newPassword: string) => { success: boolean; message: string };
+
     users: User[];
     
     menuItems: MenuItem[];
@@ -23,6 +25,7 @@ interface AppContextType {
     orders: Order[];
     addOrder: (cart: CartItem[], user: User) => Order | null;
     updateOrder: (orderOrId: Order | number, cartItems?: CartItem[]) => void;
+    bulkUpdateOrders: (orderIds: Set<number>, updates: Partial<Order>) => void;
     cancelOrder: (orderId: number) => void;
     clearAllOrders: () => void;
     
@@ -64,6 +67,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [landingContent, setLandingContent] = useState<LandingPageContent>(MOCK_LANDING_CONTENT);
     const [accessCode, setAccessCode] = useState<string>(MOCK_ACCESS_CODE);
     const [orderBeingUpdated, setOrderBeingUpdated] = useState<number | null>(null);
+    const [passwordResetTokens, setPasswordResetTokens] = useState<Map<string, { email: string; expires: number }>>(new Map());
+
 
     // --- Auth Functions ---
     const login = (email: string, password: string): User | null => {
@@ -123,6 +128,56 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
         
         return { success: true, message: "Profile updated successfully." };
+    };
+
+    const requestPasswordReset = (email: string) => {
+        const userExists = users.some(u => u.email === email);
+        if (!userExists) {
+            return { success: false, message: "No account found with that email address." };
+        }
+
+        const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        const expires = Date.now() + 3600000; // Token expires in 1 hour
+
+        setPasswordResetTokens(prev => new Map(prev).set(token, { email, expires }));
+
+        // Simulate sending email
+        const resetUrl = `${window.location.origin}${window.location.pathname}#/reset-password?token=${token}`;
+        alert(`(Simulation) Password reset link sent to ${email}.\n\nClick here to reset: ${resetUrl}`);
+
+        return { success: true, message: `If an account exists for ${email}, a reset link has been sent.` };
+    };
+
+    const resetPassword = (token: string, newPassword: string) => {
+        const tokenData = passwordResetTokens.get(token);
+
+        if (!tokenData || Date.now() > tokenData.expires) {
+            if (tokenData) {
+                // Clean up expired token
+                setPasswordResetTokens(prev => {
+                    const newMap = new Map(prev);
+                    newMap.delete(token);
+                    return newMap;
+                });
+            }
+            return { success: false, message: "Invalid or expired password reset token." };
+        }
+
+        setUsers(prevUsers => prevUsers.map(user => {
+            if (user.email === tokenData.email) {
+                return { ...user, password: newPassword };
+            }
+            return user;
+        }));
+
+        // Invalidate token after use
+        setPasswordResetTokens(prev => {
+            const newMap = new Map(prev);
+            newMap.delete(token);
+            return newMap;
+        });
+        
+        return { success: true, message: "Password has been reset successfully." };
     };
 
 
@@ -235,12 +290,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const updatedOrder = orderOrId as Order;
             setOrders(prevOrders => prevOrders.map(order => {
                 if (order.id === updatedOrder.id) {
-                    alert(`(Simulation) Order #${String(updatedOrder.id).padStart(4, '0')} has been updated by admin!`);
                     return updatedOrder;
                 }
                 return order;
             }));
         }
+    };
+
+    const bulkUpdateOrders = (orderIds: Set<number>, updates: Partial<Order>) => {
+        setOrders(prevOrders => 
+            prevOrders.map(order => {
+                if (orderIds.has(order.id)) {
+                    return { ...order, ...updates };
+                }
+                return order;
+            })
+        );
     };
 
     const cancelOrder = (orderId: number) => {
@@ -280,6 +345,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         logout,
         register,
         updateUserProfile,
+        requestPasswordReset,
+        resetPassword,
         users,
         menuItems,
         addMenuItem,
@@ -288,6 +355,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         orders,
         addOrder,
         updateOrder,
+        bulkUpdateOrders,
         cancelOrder,
         clearAllOrders,
         cart,

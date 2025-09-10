@@ -10,6 +10,8 @@ import LoginPage from './pages/LoginPage';
 import MenuPage from './pages/MenuPage';
 import AdminDashboard from './pages/AdminDashboard';
 import MyOrdersPage from './pages/MyOrdersPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 const PrivateRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
     const { auth } = useApp();
@@ -32,6 +34,8 @@ const AppContent: React.FC = () => {
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
                         <Route path="/menu" element={
                             <UserRoute>
                                 <MenuPage />

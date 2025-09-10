@@ -1,5 +1,5 @@
 {
-  "name": "Fidel's Pizza Event",
+  "name": "1st Copy of Fidel's Pizza Event",
   "description": "A web application for Fidel's Pizza Event, allowing users to register with an access code, view the menu, and place pre-orders. Includes a comprehensive admin panel for managing orders, menu items, and event details.",
   "requestFramePermissions": []
 }

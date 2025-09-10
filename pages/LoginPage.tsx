@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 const LoginPage: React.FC = () => {
@@ -54,6 +55,11 @@ const LoginPage: React.FC = () => {
                 <button type="submit" className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
                     Sign In
                 </button>
+                <div className="text-center">
+                    <Link to="/forgot-password" className="text-sm text-red-600 hover:underline">
+                        Forgot Password?
+                    </Link>
+                </div>
             </form>
         </div>
     );
