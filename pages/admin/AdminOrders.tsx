@@ -5,7 +5,7 @@ import { useApp } from '../../context/AppContext';
 import Modal from '../../components/Modal';
 import { PICKUP_TIMES } from '../../services/mockData';
 
-const KitchenSummary: React.FC<{ orders: Order[], menuItems: MenuItem[] }> = ({ orders, menuItems }) => {
+const ProductionSummary: React.FC<{ orders: Order[], menuItems: MenuItem[] }> = ({ orders, menuItems }) => {
     const [pizzaSort, setPizzaSort] = useState<{ key: string, dir: 'asc' | 'desc' }>({ key: 'name', dir: 'asc' });
     const [timeSort, setTimeSort] = useState<{ key: string, dir: 'asc' | 'desc' }>({ key: 'time', dir: 'asc' });
     
@@ -56,7 +56,7 @@ const KitchenSummary: React.FC<{ orders: Order[], menuItems: MenuItem[] }> = ({ 
 
     return (
         <div className="mt-12">
-            <h2 className="text-3xl font-bold mb-4">Kitchen Production Summary</h2>
+            <h2 className="text-3xl font-bold mb-4">Production Summary</h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-1 bg-stone-50 p-4 rounded-lg">
                     <h3 className="text-xl font-semibold mb-2">Total Pizza Production</h3>
@@ -233,7 +233,7 @@ const AdminOrders: React.FC = () => {
                 )}
             </Modal>
             
-            <KitchenSummary orders={orders} menuItems={menuItems} />
+            <ProductionSummary orders={orders} menuItems={menuItems} />
         </div>
     );
 };

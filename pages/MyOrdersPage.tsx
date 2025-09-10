@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Order, CartItem } from '../types';
-import { PICKUP_TIMES } from '../services/mockData';
 
 const MyOrdersPage: React.FC = () => {
     const { auth, orders, cancelOrder, updateOrder } = useApp();
     const [editingOrderId, setEditingOrderId] = useState<number | null>(null);
     const [editedItems, setEditedItems] = useState<CartItem[]>([]);
-    const [editedPickupTime, setEditedPickupTime] = useState<string>('');
 
     if (!auth.user) {
         return <p>Please log in to see your orders.</p>;
@@ -27,7 +25,6 @@ const MyOrdersPage: React.FC = () => {
 
     const handleStartUpdate = (order: Order) => {
         setEditingOrderId(order.id);
-        setEditedPickupTime(order.pickupTime || PICKUP_TIMES[0]);
         setEditedItems(order.items.map(item => ({
             menuItem: item.menuItem,
             quantity: item.quantity,
@@ -37,7 +34,6 @@ const MyOrdersPage: React.FC = () => {
     const handleCancelUpdate = () => {
         setEditingOrderId(null);
         setEditedItems([]);
-        setEditedPickupTime('');
     };
 
     const handleSaveChanges = () => {
@@ -47,7 +43,7 @@ const MyOrdersPage: React.FC = () => {
                     cancelOrder(editingOrderId);
                 }
             } else {
-                updateOrder(editingOrderId, editedItems, editedPickupTime);
+                updateOrder(editingOrderId, editedItems);
             }
             handleCancelUpdate(); // Exit editing mode
         }
@@ -82,7 +78,7 @@ const MyOrdersPage: React.FC = () => {
                         <p className="text-sm text-stone-500">
                             Placed on: {new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
-                        <p className="text-sm text-stone-500">Pick-up Time: <span className="font-semibold">{isEditing ? editedPickupTime : order.pickupTime}</span></p>
+                        <p className="text-sm text-stone-500">Pick-up Time: <span className="font-semibold">{order.pickupTime || 'Unassigned'}</span></p>
                     </div>
                     <span className={`px-3 py-1 text-sm font-semibold rounded-full capitalize ${
                         order.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -104,17 +100,6 @@ const MyOrdersPage: React.FC = () => {
                                 </div>
                             </div>
                         )) : <p className="text-stone-500">Your order is empty.</p>}
-                        <div className="pt-2">
-                           <label htmlFor="pickupTimeEdit" className="block text-sm font-medium text-stone-700 mb-1">Change Pick-up Time:</label>
-                           <select
-                               id="pickupTimeEdit"
-                               value={editedPickupTime}
-                               onChange={(e) => setEditedPickupTime(e.target.value)}
-                               className="w-full p-2 border border-stone-300 rounded-md"
-                           >
-                               {PICKUP_TIMES.map(time => <option key={time} value={time}>{time}</option>)}
-                           </select>
-                        </div>
                     </div>
                 ) : (
                     <div>

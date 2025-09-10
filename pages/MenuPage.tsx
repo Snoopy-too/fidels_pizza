@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { MenuItem } from '../types';
 import Modal from '../components/Modal';
-import { PICKUP_TIMES } from '../services/mockData';
 
 const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void }> = ({ item, onAddToCart }) => {
     return (
@@ -30,7 +29,6 @@ const MenuCard: React.FC<{ item: MenuItem; onAddToCart: (item: MenuItem) => void
 const MenuPage: React.FC = () => {
     const { menuItems, addToCart, cart, removeFromCart, updateCartItemQuantity, getCartTotal, addOrder, updateOrder, auth, clearCart, orderBeingUpdated } = useApp();
     const [isCartOpen, setIsCartOpen] = useState(false);
-    const [pickupTime, setPickupTime] = useState(PICKUP_TIMES[0]);
 
     const handleAddToCart = (item: MenuItem) => {
         addToCart(item, 1);
@@ -48,9 +46,9 @@ const MenuPage: React.FC = () => {
         }
 
         if (orderBeingUpdated) {
-            updateOrder(orderBeingUpdated, cart, pickupTime);
+            updateOrder(orderBeingUpdated, cart);
         } else {
-            addOrder(cart, auth.user, pickupTime);
+            addOrder(cart, auth.user);
         }
         
         setIsCartOpen(false);
@@ -103,17 +101,6 @@ const MenuPage: React.FC = () => {
                         ))}
                         <div className="text-right font-bold text-xl mt-4 pt-4 border-t">
                             Total: {getCartTotal().toLocaleString()} JPY
-                        </div>
-                        <div className="pt-4 border-t">
-                            <label htmlFor="pickupTime" className="block text-sm font-medium text-stone-700 mb-1">Select Pick-up Time:</label>
-                            <select
-                                id="pickupTime"
-                                value={pickupTime}
-                                onChange={(e) => setPickupTime(e.target.value)}
-                                className="w-full p-2 border border-stone-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
-                            >
-                                {PICKUP_TIMES.map(time => <option key={time} value={time}>{time}</option>)}
-                            </select>
                         </div>
                          <div className="flex justify-between mt-6">
                              <button onClick={() => clearCart()} className="bg-stone-500 text-white px-4 py-2 rounded hover:bg-stone-600">

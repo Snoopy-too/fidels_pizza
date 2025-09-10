@@ -21,9 +21,8 @@ interface AppContextType {
     deleteMenuItem: (id: number) => void;
 
     orders: Order[];
-    addOrder: (cart: CartItem[], user: User, pickupTime: string) => Order | null;
-    // Fix: Overload updateOrder to handle both updating items from cart and updating an order object (e.g., status change).
-    updateOrder: (orderOrId: Order | number, cartItems?: CartItem[], pickupTime?: string) => void;
+    addOrder: (cart: CartItem[], user: User) => Order | null;
+    updateOrder: (orderOrId: Order | number, cartItems?: CartItem[]) => void;
     cancelOrder: (orderId: number) => void;
     clearAllOrders: () => void;
     
@@ -184,7 +183,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
 
     // --- Order Functions ---
-    const addOrder = (cartItems: CartItem[], user: User, pickupTime: string): Order | null => {
+    const addOrder = (cartItems: CartItem[], user: User): Order | null => {
         if (cartItems.length === 0) return null;
 
         const newOrderId = orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1;
@@ -201,15 +200,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             totalAmount: cartItems.reduce((total, item) => total + item.menuItem.price * item.quantity, 0),
             status: 'pending',
             createdAt: new Date(),
-            pickupTime,
         };
         setOrders(prev => [newOrder, ...prev]);
         clearCart();
-        alert(`(Simulation) Order #${String(newOrder.id).padStart(4, '0')} placed for pickup at ${pickupTime}!\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
+        alert(`(Simulation) Order #${String(newOrder.id).padStart(4, '0')} placed!\n- An admin will assign a pickup time shortly.\n- Confirmation email sent to ${user.email}.\n- Notification sent to admins.`);
         return newOrder;
     };
     
-    const updateOrder = (orderOrId: Order | number, cartItems?: CartItem[], pickupTime?: string) => {
+    const updateOrder = (orderOrId: Order | number, cartItems?: CartItem[]) => {
         if (typeof orderOrId === 'number' && cartItems) {
             // This is the call from MenuPage or MyOrdersPage to update items from cart
             const orderId = orderOrId;
@@ -224,9 +222,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                             price: cartItem.menuItem.price
                         })),
                         totalAmount: cartItems.reduce((total, item) => total + item.menuItem.price * item.quantity, 0),
-                        pickupTime: pickupTime ?? order.pickupTime, // Update pickup time if provided
                     };
-                    alert(`(Simulation) Order #${String(orderId).padStart(4, '0')} has been updated!\n- New pickup time: ${updatedOrder.pickupTime}.\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
+                    alert(`(Simulation) Order #${String(orderId).padStart(4, '0')} has been updated!\n- Confirmation email sent to ${order.user.email}.\n- Notification sent to admins.`);
                     return updatedOrder;
                 }
                 return order;
